@@ -1,0 +1,5 @@
+{
+    "DBResultAddress" : "./data.db",
+    "MaxWorkers" : 20,
+    "WorkerName" : "tumblr"
+}
