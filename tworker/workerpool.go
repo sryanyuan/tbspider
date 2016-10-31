@@ -60,7 +60,10 @@ func (w *WorkerPool) InitWithWorkerCount(count int) error {
 		if nil == worker {
 			return fmt.Errorf("failed to create worker [%s]", config.WorkerName)
 		}
-		worker.Init(i, w)
+		err := worker.Init(i, w)
+		if nil != err {
+			return err
+		}
 		w.workers[i] = worker
 	}
 

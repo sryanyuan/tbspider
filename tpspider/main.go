@@ -3,9 +3,6 @@ package main
 import (
 	"flag"
 	"log"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/cihub/seelog"
 	"github.com/sryanyuan/tbspider/tconfig"
@@ -57,9 +54,9 @@ func main() {
 	}
 
 	//	listen for SIG
-	sigCh := make(chan os.Signal)
+	/*sigCh := make(chan os.Signal)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
-	<-sigCh
+	<-sigCh*/
 
 	// do clean up
 	pool.WaitWorkersDone()
