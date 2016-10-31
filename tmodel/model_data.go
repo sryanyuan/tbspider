@@ -9,13 +9,14 @@ const (
 )
 
 type SpiderRecordModel struct {
-	ID          int
-	ResourceID  int
-	ResourceTag string
-	WorkerName  string
-	Title       string
-	Source      string
-	Size        int
+	ID           int
+	ResourceID   int
+	ResourceTag  string
+	ResourceType string
+	WorkerName   string
+	Title        string
+	Source       string
+	Size         int
 }
 
 func (s *SpiderRecordModel) TableName() string {
@@ -30,8 +31,9 @@ func (s *SpiderRecordModel) Prepare() error {
 
 	_, err := db.Exec("CREATE TABLE IF NOT EXISTS " + spiderRecordModelName + `(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-		resource_id INTEGER UNIQUE KEY,
+		resource_id INTEGER UNIQUE,
 		resource_tag VARCHAR(128),
+		resource_type VARCHAR(64),
         worker_name VARCHAR(128),
         title VARCHAR(256),
         source VARCHAR(512),
@@ -57,8 +59,9 @@ func InsertSpiderRecord(s *SpiderRecordModel) error {
 		?,
 		?,
 		?,
+		?,
 		?
-	)`, s.ResourceID, s.ResourceTag, s.WorkerName, s.Title, s.Source, s.Size)
+	)`, s.ResourceID, s.ResourceTag, s.ResourceType, s.WorkerName, s.Title, s.Source, s.Size)
 	if nil != err {
 		return err
 	}
