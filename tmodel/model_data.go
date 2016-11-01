@@ -3,8 +3,6 @@ package tmodel
 import (
 	"fmt"
 	"os"
-
-	"github.com/cihub/seelog"
 )
 
 const (
@@ -102,8 +100,6 @@ func DumpSpiderRecordToFileByTag(fileName string, tag string) error {
 		if err = rows.Scan(&img, &source); nil != err {
 			return err
 		}
-
-		seelog.Debug("write ", img, source)
 
 		f.WriteString(img)
 		f.WriteString("\r\n")
