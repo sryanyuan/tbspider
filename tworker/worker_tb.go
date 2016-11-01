@@ -69,6 +69,34 @@ func init() {
 	registerWorker("tumblr", &WorkerTb{})
 }
 
+func getTbDataFromFile(fp string) ([]byte, error) {
+	file, err := os.Open(fp)
+	if nil != err {
+		return nil, err
+	}
+	defer file.Close()
+	rspData, err := ioutil.ReadAll(file)
+	if nil != err {
+		return nil, err
+	}
+	return rspData, nil
+}
+
+func getTbDataFromHTTP(name string, proxy string) ([]byte, error) {
+	rsp, err := GetByProxy(fmt.Sprintf("http://%s.tumblr.com/api/read?num=2", name), proxy)
+	if nil != err {
+		return nil, err
+	}
+
+	rspData, err := ioutil.ReadAll(rsp.Body)
+	if nil != err {
+		return nil, err
+	}
+	defer rsp.Body.Close()
+
+	return rspData, nil
+}
+
 func (w *WorkerTb) linfo(args ...interface{}) {
 	l := fmt.Sprintln(args...)
 	seelog.Info("WorkerTb[", w.workerID, "] : ", l)
@@ -82,33 +110,20 @@ func (w *WorkerTb) Init(workerID int, pool *WorkerPool) error {
 	// here we initialize work task once
 	if nil == sharedTbTaskQueue {
 		seelog.Info("Initialize task queue, it may takes some time, please wait ...")
+		rspData, err := getTbDataFromFile("get.log")
+		if nil != err {
+			return err
+		}
+		// get the root element
+		var root tbXmlRoot
+		if err = xml.Unmarshal(rspData, &root); nil != err {
+			return err
+		}
+		// get the video source by regexp
+		regV := regexp.MustCompile(`.*?file_(.*?)" type="video/mp4"`)
+		regV.FindAllStringSubmatch(string(rspData), -1)
 
-		/*rsp, err := GetByProxy(fmt.Sprintf("http://%s.tumblr.com/api/read?num=2", config.SpiderKeyword), config.ProxyAddress)
-		if nil != err {
-			return err
-		}
-
-		rspData, err := ioutil.ReadAll(rsp.Body)
-		if nil != err {
-			return err
-		}
-		defer rsp.Body.Close()*/
-		file, err := os.Open("get.log")
-		if nil != err {
-			return err
-		}
-		defer file.Close()
-		rspData, err := ioutil.ReadAll(file)
-		if nil != err {
-			return err
-		}
-		reg, err := regexp.Compile(`/tumblr_(.*?)" type="video/mp4"'`)
-		if nil != err {
-			return err
-		}
-		result := reg.FindAllString(string(rspData), -1)
-
-		seelog.Info(result)
+		// write result
 		sharedTbTaskQueue = make([]*tbWorkTask, 0, 32)
 	}
 
