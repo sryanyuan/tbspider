@@ -116,8 +116,8 @@ func (w *WorkerTb) Init(workerID int, pool *WorkerPool) error {
 	// here we initialize work task once
 	if 0 == sharedTbTaskTotalSize {
 		seelog.Info("Initialize task queue, it may takes some time, please wait ...")
-		rspData, err := getTbDataFromFile("./get.log")
-		//rspData, err := getTbDataFromHTTP(config.SpiderKeyword, config.ProxyAddress, 0, 1)
+		//rspData, err := getTbDataFromFile("./get.log")
+		rspData, err := getTbDataFromHTTP(config.SpiderKeyword, config.ProxyAddress, 0, 1)
 		if nil != err {
 			return err
 		}
