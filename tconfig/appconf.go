@@ -11,11 +11,12 @@ import (
 )
 
 type AppConfig struct {
-	DBResultAddress string `validate:"nonzero"`
-	MaxWorkers      int
-	WorkerName      string
-	ProxyAddress    string
-	SpiderKeyword   string
+	DBResultAddress    string `validate:"nonzero"`
+	MaxWorkers         int
+	WorkerName         string
+	ProxyAddress       string
+	SpiderKeyword      string
+	DownloadOutputFile string
 }
 
 // global share config

@@ -60,5 +60,13 @@ func main() {
 
 	// do clean up
 	pool.WaitWorkersDone()
+
+	if appConfig.DownloadOutputFile != "" {
+		if err = tmodel.DumpSpiderRecordToFileByTag(appConfig.DownloadOutputFile, appConfig.SpiderKeyword); nil == err {
+			seelog.Info("Write tasks to file ", appConfig.DownloadOutputFile, " success")
+		} else {
+			seelog.Info("Write tasks to file ", appConfig.DownloadOutputFile, " failed : ", err)
+		}
+	}
 	tmodel.Shutdown()
 }
